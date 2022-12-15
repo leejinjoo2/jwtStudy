@@ -20,7 +20,7 @@ const MainNavigation = () =>{
     if (isLogin) {
       console.log('start');
       authCtx.getUser();
-    } 
+    }
   }, [isLogin]);
 
   useEffect(() => {
@@ -35,19 +35,19 @@ const MainNavigation = () =>{
     authCtx.logout();
   }
 
-  
+
   return(
-    <header className={classes.header}>
-      <Link to='/'><div className={classes.logo}>Home</div></Link>
-      <nav>
-        <ul>
-          <li>{!isLogin && <Link to='/login'>Login</Link>}</li>
-          <li>{!isLogin && <Link to='signup'>Sign-Up</Link>}</li>
-          <li>{isLogin && <Link to='/profile'>{nickname}</Link>}</li>
-          <li>{isLogin && <button onClick={toggleLogoutHandler}>Logout</button>}</li>
-        </ul>
-      </nav>
-    </header>
+      <header className={classes.header}>
+        <Link to='/'><div className={classes.logo}>Home</div></Link>
+        <nav>
+          <ul>
+            <li>{!isLogin && <Link to='/login'>Login</Link>}</li>
+            <li>{!isLogin && <Link to='signup'>Sign-Up</Link>}</li>
+            <li>{isLogin && <Link to='/profile'>{nickname}</Link>}</li>
+            <li>{isLogin && <button onClick={toggleLogoutHandler}>Logout</button>}</li>
+          </ul>
+        </nav>
+      </header>
   );
 };
 

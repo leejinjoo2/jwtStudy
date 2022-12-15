@@ -12,6 +12,8 @@ import com.example.demo.repository.UserRepository;
 import com.example.demo.service.AuthService;
 import com.example.demo.service.UserService;
 import io.jsonwebtoken.Jwt;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -41,6 +43,8 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @RestController
 @RequestMapping("/api")
 public class AuthController {
+
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
     private final TokenProvider tokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
@@ -73,7 +77,7 @@ public class AuthController {
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        String jwt = tokenProvider.createToken(authentication);
+        TokenDto jwt = tokenProvider.createToken(authentication);
 
         Date now = new Date();
 
@@ -86,7 +90,7 @@ public class AuthController {
 
         Token token = Token.builder()
                 .user(userRepository.findByUsername(authentication.getName()).get())
-                .tokenName(jwt)
+                .tokenName(jwt.getToken())
                 .createdDate(now)
                 .expiredDate(date)
                 .build();
@@ -95,9 +99,9 @@ public class AuthController {
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
+        logger.info("로그인을 하는 나는 여기로 옵니다.");
 
-        return new ResponseEntity<>(new TokenDto(jwt), httpHeaders, HttpStatus.OK);
-
+        return new ResponseEntity<>(new TokenDto(jwt.getToken(), jwt.getTokenExpiresIn()), httpHeaders, HttpStatus.OK);
     }
 
     @PostMapping("/user/logout")
@@ -106,7 +110,6 @@ public class AuthController {
         DecodedJWT decodedToken=authService.getDecodedToken(token);
         authService.logout(token);
         SecurityContextHolder.getContext().setAuthentication(null);
-//        System.out.println("로그아웃 한 나는 누구인가요 :"+SecurityContextHolder.getContext().toString());
 //        그럼 이 때 리다이렉션으로 홈화면으로 이동하기
     }
 }

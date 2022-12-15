@@ -1,5 +1,6 @@
 package com.example.demo.dto;
 
+import com.example.demo.domain.entity.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
@@ -25,4 +26,9 @@ public class UserDto {
     @NotNull
     @Size(min = 3, max = 50)
     private String nickname;
+
+    public static UserDto of(User user){
+        return UserDto.builder().username(user.getUsername())
+                .nickname(user.getNickname()).build();
+    }
 }

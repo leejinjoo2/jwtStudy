@@ -20,6 +20,7 @@ const StaringPage = () => {
     console.log('home start!');
     if (isLogin) {
       callback(authCtx.userObj.nickname);
+      
     } else {
       callback('');
     }
@@ -30,10 +31,13 @@ const StaringPage = () => {
 
   return(
     <section className={classes.starting}>
-      <h1>Hi!</h1>
-      <h1>{testStr}</h1>
-      <Link to='/page/1'>게시판페이지</Link>
-    </section>
+      <br/>
+      <br/>
+      <br/>
+      <h1>Hi! {testStr}</h1>
+      <br/>
+      {isLogin && <p>{authCtx.userObj.nickname}님 안녕하세요</p>}
+      </section>
   );
 }
 

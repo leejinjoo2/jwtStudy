@@ -22,7 +22,7 @@ const CreateAccountForm = () => {
     if (authCtx.isSuccess) {
       navigate("/",  { replace: true })
     }
-    //setIsSuccess(true);
+    setIsSuccess(true);
   }
 
   const formToServer = () => {

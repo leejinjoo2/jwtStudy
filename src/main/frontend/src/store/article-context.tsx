@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback, useRef, useContext } from "react";
 import * as articleAction from './article-action';
 
 import { ChildProps, ArticleInfo, PostArticle } from '../utility/types';
+import AuthContext from "./auth-context";
 
 interface Ctx {
   article?: ArticleInfo | undefined;
@@ -40,6 +41,8 @@ export const ArticleContextProvider:React.FC<ChildProps> = (props) => {
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const [isGetUpdateSuccess, setIsGetUpdateSuccess] = useState<boolean>(false);
 
+  // const authCtx = useContext(AuthContext);
+  // let token = authCtx.token;
 
   const getPageHandler = async (pageId: string) => {
     setIsSuccess(false);
@@ -67,6 +70,8 @@ export const ArticleContextProvider:React.FC<ChildProps> = (props) => {
 
   const createArticleHandler = (article:PostArticle, token:string) => {
     setIsSuccess(false);
+    console.log(token);
+    //여기 토큰 안오는거 확인 !!
     const data = articleAction.makeArticle(token, article);
     data.then((result) => {
       if (result !== null) {
@@ -77,9 +82,9 @@ export const ArticleContextProvider:React.FC<ChildProps> = (props) => {
   }
 
   // useCallback 없애봄
-  const getUpdateArticleHancler = async (token:string, param:string) => {
+  const getUpdateArticleHandler = async (token:string, param:string) => {
     setIsGetUpdateSuccess(false);
-    const updateData = await articleAction.getChangeArticle(token, param);
+    const updateData = await articleAction.getUpdateArticle(token, param);
     const article:ArticleInfo = updateData?.data;
     setArticle(article);
     setIsGetUpdateSuccess(true);
@@ -87,11 +92,11 @@ export const ArticleContextProvider:React.FC<ChildProps> = (props) => {
 
   const updateArticleHandler = (token:string, article:PostArticle) => {
     setIsSuccess(false);
-    console.log('update api start')
-    const data = articleAction.changeArticle(token, article);
+    console.log('update api start?')
+    const data = articleAction.updateArticle(token, article);
     data.then((result) => {
       if (result !== null) {
-        
+        console.log(isSuccess);
       }
     })
     setIsSuccess(true);
@@ -117,7 +122,7 @@ export const ArticleContextProvider:React.FC<ChildProps> = (props) => {
     getPageList: getPageHandler,
     getArticle: getArticleHandler,
     createArticle: createArticleHandler,
-    getUpdateArticle: getUpdateArticleHancler,
+    getUpdateArticle: getUpdateArticleHandler,
     updateArticle: updateArticleHandler,
     deleteArticle: deleteArticleHandler
   }

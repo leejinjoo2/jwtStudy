@@ -24,7 +24,7 @@ const ArticleList:React.FC<Props> = (props) => {
       return { width: "8%" };
     }
   },{
-    dataField: 'articleTitle',
+    dataField: 'title',
     text: '제목',
     headerStyle: () => {
       return { width: "65%" };
@@ -36,7 +36,7 @@ const ArticleList:React.FC<Props> = (props) => {
       }
     }
   },{
-    dataField: 'memberNickname',
+    dataField: 'username',
     text: '닉네임'
   },{
     dataField: 'createdAt',
@@ -73,7 +73,7 @@ const ArticleList:React.FC<Props> = (props) => {
   return (
     <div className={classes.list}>
       <BootStrapTable keyField='id' data = { AList } columns={ columns } />
-      <div>{isLogin &&
+       <div>{isLogin &&
         <Link to="/create">
           <Button>글 작성</Button>
         </Link>

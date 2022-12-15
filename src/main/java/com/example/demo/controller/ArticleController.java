@@ -65,7 +65,7 @@ public class ArticleController {
         return ResponseEntity.ok(articleService.oneArticle(id));
     }
 
-    @PutMapping("/updateOk")
+    @PutMapping("/updateOK")
     public ResponseEntity<ArticleResponseDto> putChangeArticle(@RequestBody UpdateArticleRequestDto request) {
         return ResponseEntity.ok(articleService.changeArticle(
                 request.getId(), request.getTitle(), request.getContent()));
@@ -78,7 +78,7 @@ public class ArticleController {
                 request.getId(), request.getTitle(), request.getContent()));
     }
 
-    @DeleteMapping("/deleteOne")
+    @DeleteMapping("/one")
     public ResponseEntity<MessageDto> deleteArticle(@RequestParam(name = "id") Long id) {
         articleService.deleteArticle(id);
         return ResponseEntity.ok(new MessageDto("Success"));

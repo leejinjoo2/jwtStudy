@@ -4,10 +4,13 @@ import com.example.demo.domain.entity.Article;
 import com.example.demo.domain.entity.User;
 import com.example.demo.dto.ArticleResponseDto;
 import com.example.demo.dto.PageResponseDto;
+import com.example.demo.jwt.JwtFilter;
 import com.example.demo.repository.ArticleRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
@@ -22,6 +25,7 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ArticleService {
+    private static final Logger logger = LoggerFactory.getLogger(ArticleService.class);
     private final ArticleRepository articleRepository;
     private final UserRepository userRepository;
 
@@ -38,7 +42,7 @@ public class ArticleService {
         if (authentication == null || authentication.getPrincipal() == "anonymousUser") {
             return ArticleResponseDto.of(article, false);
         } else {
-            User user = userRepository.findById(Long.parseLong(authentication.getName())).orElseThrow();
+            User user = userRepository.findByUsername(authentication.getName()).orElseThrow();
             boolean result = article.getUser().equals(user);
             return ArticleResponseDto.of(article, result);
         }
@@ -51,13 +55,19 @@ public class ArticleService {
     @Transactional
     public ArticleResponseDto postArticle(String title, String content, int boardId) {
         User user = isUserCurrent();
+        logger.info(user.getAuthorities().toString());
+        if(user.getAuthorities().contains("USER_ADMIN")){
+            boardId=1;
+        }else{
+            boardId=2;
+        }
         Article article = Article.createArticle(title, content, user, boardId);
         return ArticleResponseDto.of(articleRepository.save(article), true);
     }
 
     @Transactional
-    public ArticleResponseDto changeArticle(Long id, String title, String content) {
-        Article article = authorizationArticleWriter(id);
+    public ArticleResponseDto changeArticle(Long articleId, String title, String content) {
+        Article article = authorizationArticleWriter(articleId);
         return ArticleResponseDto.of(articleRepository.save(Article.updateArticle(article, title, content)), true);
     }
 

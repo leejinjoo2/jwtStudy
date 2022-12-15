@@ -12,6 +12,7 @@ import com.example.demo.repository.UserRepository;
 import com.example.demo.util.SecurityUtil;
 import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.Jwts;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,18 +28,15 @@ import java.util.Collections;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
-    @Autowired
+
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private AuthenticationManagerBuilder authenticationManagerBuilder;
     private TokenRepository tokenRepository;
     private TokenProvider tokenProvider;
-
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
+    private final SecurityUtil securityUtil;
 
     @Transactional
     public User signup(UserDto userDto) {
@@ -86,5 +84,10 @@ public class UserService {
     @Transactional(readOnly = true)
     public Optional<User> getMyUserWithAuthorities() {
         return SecurityUtil.getCurrentUsername().flatMap(userRepository::findOneWithAuthoritiesByUsername);
+    }
+
+
+    public UserDto getMyInfoBySecurity(){
+        return userRepository.findById(securityUtil.getCurrentUserId()).map(UserDto::of).orElseThrow(()->new RuntimeException("로그인 유저 정보가 없습니다"));
     }
 }

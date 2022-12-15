@@ -1,9 +1,12 @@
 import { GET, POST }  from "./fetch-action";
+import { useState, useContext } from "react";
+import { isConstructorDeclaration, tokenToString } from "typescript";
+import AuthContext from "./auth-context";
 
 const createTokenHeader = (token:string) => {
   return {
     headers: {
-      'Content-Type': 'application/json',
+      //'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + token
     }
   }
@@ -19,8 +22,6 @@ const calculateRemainingTime = (expirationTime:number) => {
 export const loginTokenHandler = (token:string, expirationTime:number) => {
   localStorage.setItem('token', token);
   localStorage.setItem('expirationTime', String(expirationTime));
-  console.log(localStorage.getItem);
-  console.log("로그인하려고 하는 나는 여기를 탑니다.")
   const remainingTime = calculateRemainingTime(expirationTime);
   return remainingTime;
 }
@@ -30,8 +31,11 @@ export const retrieveStoredToken = () => {
   const storedExpirationDate = localStorage.getItem('expirationTime') || '0';
 
   const remaingTime = calculateRemainingTime(+ storedExpirationDate);
+  console.log("이거 언제 타는지 확인")
+  console.log(storedToken);
 
-  if(remaingTime <= 1000) {
+  if(remaingTime <= 10) {
+    console.log("나 혹시 여기로 오는가요")
     localStorage.removeItem('token');
     localStorage.removeItem('expirationTime');
     return null
@@ -51,21 +55,24 @@ export const signupActionHandler = (username: string, password: string, nickname
   return response;
 };
 
-export const loginActionHandler = (username:string, password: string) => {
-  const URL = '/api/login';
+export const loginActionHandler = (username: string, password: string) => {
+  const URL = '/api/login'
   const loginObject = { username, password };
   const response = POST(URL, loginObject, {});
-
   return response;
 };
 
-export const logoutActionHandler = () => {
+export const logoutActionHandler = (token : string) => {
+  const sObject = tokenToString;
+  console.log(token);
+  const URL = '/api/user/logout'
+  const response = POST(URL, token, token);
   localStorage.removeItem('token');
   localStorage.removeItem('expirationTime');
 };
 
 export const getUserActionHandler = (token:string) => {
-  const URL = '/member/me';
+  const URL = '/api/user/me';
   const response = GET(URL, createTokenHeader(token));
   return response;
 }

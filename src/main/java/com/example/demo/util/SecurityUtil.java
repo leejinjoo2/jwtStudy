@@ -18,8 +18,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SecurityUtil {
 
-    private static final Logger logger = LoggerFactory.getLogger(SecurityUtil.class);
     private final UserRepository userRepository;
+    //private static final Logger logger = LoggerFactory.getLogger(SecurityUtil.class);
 
     public static Optional<String> getCurrentUsername() {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -41,17 +41,18 @@ public class SecurityUtil {
     }
 
     public Long getCurrentUserId() {
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || authentication.getName() == null) {
             throw new RuntimeException("Security Context에 인증 정보가 없습니다.");
         }
+        System.out.println(authentication.getName());
+        Long userId;
+        userId= userRepository.findOneWithAuthoritiesByUsername(authentication.getName()).get().getUserId();
 
-        System.out.println(userRepository.findByUsername(authentication.getName()).get()==null);
-        if(userRepository.findByUsername(authentication.getName()).get()!=null){
-            System.out.println(userRepository.findByUsername(authentication.getName()).get());
-            //System.out.println(userRepository.findByUsername(username).get().getUserId().getClass());
-        }
-        return userRepository.findByUsername(authentication.getName()).get().getUserId();
+        //여기 나중에 해결하고 가야함 !!!!
+        return userId;
     }
+
 }

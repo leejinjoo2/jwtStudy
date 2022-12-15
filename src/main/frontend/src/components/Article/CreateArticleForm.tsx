@@ -13,21 +13,21 @@ const CreateArticleForm:React.FC<Props> = (props) => {
 
   const [updateArticle, setUpdateArticle] = useState<PostArticle>({
     title: '',
-    body: ''
+    content: ''
   });
 
   const articleCtx = useContext(ArticleContext);
   const authCtx = useContext(AuthContext);
 
   const titleRef = useRef<HTMLInputElement>(null);
-  const mainRef = useRef<HTMLTextAreaElement>(null);
+  const contentRef = useRef<HTMLTextAreaElement>(null);
 
   const submitHandler = (event: React.FormEvent) => {
     event.preventDefault();
 
     let postArticle:PostArticle = {
       title: titleRef.current!.value,
-      body: mainRef.current!.value
+      content: contentRef.current!.value
     }
 
     if (props.item) {
@@ -40,10 +40,11 @@ const CreateArticleForm:React.FC<Props> = (props) => {
   }
 
   const setUpdateArticleHandler = useCallback(() => {
+    console.log("수정할 때 여기 옵니까")
     if (articleCtx.isGetUpdateSuccess) {
       setUpdateArticle({
-        title: articleCtx.article!.articleTitle,
-        body: articleCtx.article!.articleBody
+        title: articleCtx.article!.title,
+        content: articleCtx.article!.content
       })
     }
   }, [articleCtx.isGetUpdateSuccess])
@@ -61,7 +62,7 @@ const CreateArticleForm:React.FC<Props> = (props) => {
 
   useEffect(() => {
     if (articleCtx.isSuccess) {
-      console.log("wrting success");
+      console.log("writing success");
       navigate("/page/1", { replace: true })
     }
   }, [articleCtx.isSuccess])
@@ -69,6 +70,11 @@ const CreateArticleForm:React.FC<Props> = (props) => {
   return (
     <div>
         <Form onSubmit={submitHandler}>
+          {/*<Form.Group >*/}
+          {/*  <Form.Control*/}
+          {/*    defaultValue={updateArticle.id}*/}
+          {/*  />*/}
+          {/*</Form.Group>*/}
           <Form.Group>
             <Form.Label>제목</Form.Label>
             <Form.Control 
@@ -86,8 +92,8 @@ const CreateArticleForm:React.FC<Props> = (props) => {
               as="textarea" 
               rows={20}
               required
-              ref={mainRef}
-              defaultValue={updateArticle.body} 
+              ref={contentRef}
+              defaultValue={updateArticle.content} 
             /> 
           </Form.Group>
           <br />

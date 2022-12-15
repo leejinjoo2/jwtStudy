@@ -19,17 +19,18 @@ function App() {
     <Layout>
       <Routes>
         <Route path="/" element={<HomePage />} />
-
-        
         <Route path="/page/:pageId" element={<ArticleListPage />} />
-        <Route path="/create" element={authCtx.isLoggedIn ? <CreateArticlePage /> : <Navigate to='/' />} />
+        {/* <Route path="/create" element={authCtx.isLoggedIn ? <CreateArticlePage /> : <Navigate to='/' />} /> */}
+        <Route path="/create" element={<CreateArticlePage/>}/>
         <Route path="/update/:articleId" element={authCtx.isLoggedIn ? <UpdateArticlePage /> : <Navigate to='/' />} />
+        {/* <Route path="/update/:articleId" element={<UpdateArticlePage/>}/> */}
         <Route path="/article/:articleId" element={<ArticleOnePage />} />
 
         <Route path="/signup/" element={authCtx.isLoggedIn ? <Navigate to='/' /> : <CreateAccountPage />} />
         <Route path="/login/*" 
           element={authCtx.isLoggedIn ? <Navigate to='/' /> : <AuthPage />}
         />
+        <Route path="/logout" element={authCtx.isLoggedIn ? <AuthPage />:<HomePage />}/>
       </Routes>
     </Layout>
   );

@@ -25,17 +25,19 @@ public class UserController {
         return ResponseEntity.ok(userService.signup(userDto));
     }
 
-    @GetMapping("/user")
+    @GetMapping("/user/me")
     @PreAuthorize("hasAnyRole('USER')")
-    public String getMyUserInfo() {
-        System.out.println("여기오나요");
-        return "나는 토큰이 유효한 유저입니다.";
+    public ResponseEntity<UserDto> getMyUserInfo() {
+        UserDto myInfoBySecurity = userService.getMyInfoBySecurity();
+        //System.out.println(myInfoBySecurity.toString());
+        //여기 안오는거 확인
+        return ResponseEntity.ok((myInfoBySecurity));
     }
 
-    @GetMapping("/user/{username}")
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<User> getUserInfo(@PathVariable String username) {
-        return ResponseEntity.ok(userService.getUserWithAuthorities(username).get());
-    }
+//    @GetMapping("/user/{username}")
+//    @PreAuthorize("hasAnyRole('ADMIN')")
+//    public ResponseEntity<User> getUserInfo(@PathVariable String username) {
+//        return ResponseEntity.ok(userService.getUserWithAuthorities(username).get());
+//    }
 
 }

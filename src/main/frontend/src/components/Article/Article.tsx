@@ -29,22 +29,20 @@ const Article:React.FC<Props> = (props) => {
   return (
     <div>
       <header>
-          <h4>{props.item!.articleTitle}</h4>
+          <h4>{props.item!.title}</h4>
+          <div><span>{props.item!.content}</span></div>
           <div>
-            <span>이름: {props.item!.memberNickname}</span><br />
+            <span>이름: {props.item!.username}</span><br />
             <span>날짜 : {props.item!.updatedAt}</span>
           </div>
         </header>
-        <div>
-          <div>{props.item!.articleBody}</div>
-        </div>
         <button onClick={backHandler}>뒤로</button>
-        {props.item!.isWritten && 
+        {/* {props.item!.isWritten &&  */}
           <div>
             <button onClick={updateHandler}>수정</button><br />
             <button onClick={deleteHandler}>삭제</button>
           </div>
-        }
+        {/* } */}
     </div>
   );
 }

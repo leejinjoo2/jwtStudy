@@ -7,7 +7,7 @@ type Props = { children?: React.ReactNode }
 type UserInfo = { username: string, nickname: string};
 type LoginToken = { 
   grantType: string,
-  accessToken: string,
+  token: string,
   tokenExpiresIn: number
 }
 
@@ -43,10 +43,7 @@ export const AuthContextProvider:React.FC<Props> = (props) => {
   
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const [isGetSuccess, setIsGetSuccess ] = useState<boolean>(false);
-
   const userIsLoggedIn = !!token;
-
-
   
   const signupHandler = (username:string, password: string, nickname: string) => {
     setIsSuccess(false);
@@ -82,21 +79,31 @@ export const AuthContextProvider:React.FC<Props> = (props) => {
     setIsSuccess(false);
     const getData = await authAction.loginActionHandler(username, password);
     const loginData:LoginToken = getData?.data;
+    console.log('토큰만료시간 언제일까요');
+    console.log(loginData)
     if (loginData) {
-      setToken(loginData.accessToken);
+      setToken(loginData.token);
+      console.log(token);
       logoutTimer = setTimeout(
         logoutHandler,
-        authAction.loginTokenHandler(loginData.accessToken, loginData.tokenExpiresIn)
+        authAction.loginTokenHandler(loginData.token, loginData.tokenExpiresIn)
+        
       );
+      //이게 문제였음 !!!!
+      //만료됐을 때, 어떻게 처리할지 생각하기..
+      //처리했음 ! 이유는 서버단에서 토큰 발급할 때 토큰dto가 아닌 스트링으로 발급해서 문제였음.. 만료시간이 발급 내용에 없었음 ㅠㅠ
     }
     setIsSuccess(true);
   };
 
   const logoutHandler = useCallback(() => {
+    authAction.logoutActionHandler(token);
     setToken('');
-    authAction.logoutActionHandler();
+    //setUserObj({username:'', nickname:''});
     if (logoutTimer) {
+      console.log("로그인할 때 나 여기로 오나요?")
       clearTimeout(logoutTimer);
+
     }
   }, []);
 
@@ -109,6 +116,7 @@ export const AuthContextProvider:React.FC<Props> = (props) => {
         const userData:UserInfo = result.data;
         setUserObj(userData);
         setIsGetSuccess(true);
+        
       }
     })    
     

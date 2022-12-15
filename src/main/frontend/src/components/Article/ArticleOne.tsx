@@ -40,21 +40,20 @@ const ArticleOne:React.FC<Props> = (props) => {
   useEffect(() => {
     if (articleCtx.isSuccess) {
       setArticle(articleCtx.article);
-      console.log(article);
-      console.log(article?.cratedAt);
+      //console.log(article);
       setIsLoading(true);
     }
   }, [articleCtx, article]);
 
-  let content = <p>Loading</p>
+  let content1 = <p>Loading</p>
 
   if (isLoading && article) {
-    content = <Article item={article} onDelete={deleteHandler} />
+    content1 = <Article item={article} onDelete={deleteHandler} />
   }
 
   return ( 
     <div className={classses.article}>
-      {content}
+      {content1}
     </div>
     
   );

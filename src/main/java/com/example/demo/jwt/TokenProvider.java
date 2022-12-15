@@ -1,6 +1,7 @@
 package com.example.demo.jwt;
 
 import com.example.demo.domain.entity.Token;
+import com.example.demo.dto.TokenDto;
 import com.example.demo.repository.TokenRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.AuthService;
@@ -68,7 +69,7 @@ public class TokenProvider implements InitializingBean {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String createToken(Authentication authentication) {
+    public TokenDto createToken(Authentication authentication) {
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
@@ -76,13 +77,18 @@ public class TokenProvider implements InitializingBean {
         long now = (new Date()).getTime();
         Date validity = new Date(now + this.tokenValidityInMilliseconds);
 
-        return Jwts.builder()
+        String token = Jwts.builder()
                 .setSubject(authentication.getName())
                 .setIssuedAt(new Date(now))
                 .claim(AUTHORITIES_KEY, authorities)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .setExpiration(validity)
                 .compact();
+
+        return TokenDto.builder()
+                        .token(token)
+                                .tokenExpiresIn(validity.getTime())
+                .build();
 
     }
 

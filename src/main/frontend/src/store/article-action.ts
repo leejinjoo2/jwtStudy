@@ -3,10 +3,11 @@ import { GET, POST, PUT, DELETE }  from "./fetch-action";
 interface PostArticle {
   id? : string,
   title: string,
-  body: string
+  content: string
 }
 
 const createTokenHeader = (token:string) => {
+  const URL = ''
   return {
     headers: {
       'Content-Type': 'application/json',
@@ -16,7 +17,7 @@ const createTokenHeader = (token:string) => {
 }
 
 export const getArticleList = () => {
-  const URL = 'api/user/article/all/';
+  const URL = '/api/user/article/all/';
   const response = GET(URL, {});
   return response;
 };
@@ -28,7 +29,7 @@ export const getPageList = (param:string) => {
 }
 
 export const getOneArticle = (param:string, token?:string) => {
-  const URL= 'api/user/article/one?id=' + param;
+  const URL= '/api/user/article/one?id=' + param;
   if (!token) {
     const response = GET(URL, {});
     return response;
@@ -39,25 +40,26 @@ export const getOneArticle = (param:string, token?:string) => {
 };
 
 export const makeArticle = (token:string, article:PostArticle) => {
-  const URL = 'api/user/article/write';
+  const URL = '/api/user/article/write';
   const response = POST(URL, article, createTokenHeader(token));
   return response;
 };
 
-export const getChangeArticle = (token:string, param:string) => {
-  const URL = 'api/user/article/change?id=' + param;
+export const getUpdateArticle = (token:string, param:string) => {
+  const URL = '/api/user/article/update?id=' + param;
   const response = GET(URL, createTokenHeader(token));
   return response;
 };
 
-export const changeArticle = (token:string, article:PostArticle) => {
-  const URL = 'api/user/article/';
+export const updateArticle = (token:string, article:PostArticle) => {
+  const URL = '/api/user/article/updateOK';
   const response = PUT(URL, article, createTokenHeader(token));
+  // console.log(article.id); - 여기까지 id 잘 옴!
   return response;
 };
 
 export const deleteArticle = (token:string, param:string) => {
-  const URL = 'api/user/article/one?id=' + param;
+  const URL = '/api/user/article/one?id=' + param;
   const response = DELETE(URL, createTokenHeader(token));
   return response;
 }

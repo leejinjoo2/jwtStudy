@@ -37,7 +37,10 @@ const AuthForm = () => {
     if (formSuccess) {
       if (authCtx.isSuccess) {
         if (authCtx.token) {
+
           navigate("/", { replace: true });
+          localStorage.setItem('token', authCtx.token);
+
         } else {
           alert("로그인 실패");
         }

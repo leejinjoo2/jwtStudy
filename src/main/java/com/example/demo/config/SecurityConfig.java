@@ -54,8 +54,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests() //HttpServletRequest를 사용하는 요청들에 대한 접근 제한을 설정하겠다는 의미
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                 .antMatchers("/api/admin").hasAnyAuthority("ROLE_ADMIN")
-                .antMatchers("/api/user/**").authenticated()
-                .antMatchers("/api/signup","/api/login").permitAll() //나머자 요청들은 모두 ok
+
+                .antMatchers("/api/signup","/api/login","/api/user/article/page").permitAll()//나머자 요청들은 모두 ok
+                .antMatchers("/api/user/**", "/api/user/article/one").authenticated()
 
                 .and()
                 .apply(new JwtSecurityConfig(tokenProvider, redisTemplate))
